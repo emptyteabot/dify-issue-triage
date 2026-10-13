@@ -1,0 +1,452 @@
+app:
+  name: GitHub Issue Triage
+  description: Public issue context, related reports and an evidence-first reply draft. Read-only, rule-based, no
+    LLM key required.
+  mode: workflow
+  icon: 🔎
+  icon_background: '#DDF7ED'
+  use_icon_as_answer_icon: false
+kind: app
+version: 0.3.1
+dependencies: []
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      enabled: false
+      allowed_file_extensions: []
+      allowed_file_types: []
+      allowed_file_upload_methods: []
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: false
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    nodes:
+    - id: start
+      type: custom
+      data:
+        type: start
+        title: Repository and issue
+        desc: ''
+        selected: false
+        variables:
+        - variable: repository
+          label: Public repository (owner/repository)
+          type: text-input
+          required: true
+          max_length: 140
+          options: []
+        - variable: issue_number
+          label: Issue number
+          type: text-input
+          required: true
+          max_length: 10
+          options: []
+      position:
+        x: 40
+        y: 200
+      positionAbsolute:
+        x: 40
+        y: 200
+      width: 244
+      height: 110
+      sourcePosition: right
+      targetPosition: left
+      selected: false
+    - id: read
+      type: custom
+      data:
+        type: tool
+        title: Read public issue
+        desc: ''
+        selected: false
+        provider_id: emptyteabot/issue_triage/issue_triage
+        provider_name: emptyteabot/issue_triage/issue_triage
+        provider_type: builtin
+        plugin_id: emptyteabot/issue_triage
+        tool_name: read_issue
+        tool_label: Read public issue
+        tool_description: Read-only GitHub API operation.
+        tool_configurations: {}
+        tool_parameters:
+          repository:
+            type: mixed
+            value: '{{#start.repository#}}'
+          issue_number:
+            type: mixed
+            value: '{{#start.issue_number#}}'
+        tool_node_version: '2'
+        is_team_authorization: true
+      position:
+        x: 370
+        y: 200
+      positionAbsolute:
+        x: 370
+        y: 200
+      width: 244
+      height: 110
+      sourcePosition: right
+      targetPosition: left
+      selected: false
+    - id: inspect
+      type: custom
+      data:
+        type: code
+        title: Inspect and route
+        desc: ''
+        selected: false
+        code_language: python3
+        code: "\"\"\"Code node 1: route errors/security and collect conservative triage signals.\"\"\"\nimport json\n\
+          import re\n\n\ndef main(payload_json: str) -> dict:\n    data = json.loads(payload_json)\n    if not data.get('ok'):\n\
+          \        err = data.get('error', {})\n        return {'route':'stop','keywords':'','context_json':'{}','report':'##\
+          \ Unable to retrieve issue\\n\\n' + err.get('message','Unexpected error.') + '\\n\\nError code: ' + err.get('code','unknown')\
+          \ + '\\n\\nNo diagnosis was generated.'}\n    issue = data['issue']\n    text = issue['title'] + '\\n'\
+          \ + issue['body'] + '\\n' + '\\n'.join(x['body'] for x in data.get('comments',[]))\n    if re.search(r'(?i)(expos\\\
+          w*.{0,60}(api.?key|token|secret)|other users?.{0,50}(key|token)|credential leak|security vulnerability|unauthorized\
+          \ access|remote code execution)', text):\n        return {'route':'stop','keywords':'','context_json':'{}','report':'##\
+          \ Potential security report: private review required\\n\\nA keyword rule flagged this report; this is\
+          \ not a confirmed vulnerability. Do not request a public PoC, additional keys or exploitation details.\
+          \ Use the repository\\'s published private security reporting channel. Escalate to its security maintainers.\\\
+          n\\n### Suggested public reply\\nThanks for flagging this. Please avoid posting further reproduction details\
+          \ or credentials publicly. Please use this repository\\'s Security policy or private vulnerability reporting\
+          \ channel so the security team can investigate safely.\\n\\nIssue text is intentionally omitted from this\
+          \ report. Dify execution logs can still contain the tool output: restrict log access.'}\n    missing =\
+          \ []\n    if not re.search(r'(?i)\\b(?:v?\\d+\\.\\d+\\.\\d+)\\b',text):\n        missing.append('Exact\
+          \ Dify version and plugin/provider version (and previous version if this followed an upgrade)')\n    if\
+          \ not re.search(r'(?i)docker|self.host|dify cloud|cloud.dify|kubernetes|\\bk8s\\b|source deployment',text):\n\
+          \        missing.append('Deployment type: Dify Cloud, Docker, Kubernetes, or source deployment')\n   \
+          \ if not re.search(r'(?im)^\\s*(?:\\d+[.)]\\s+\\S|curl\\s+\\S)|```(?:python|bash|json|sh)?\\s*\\n\\S',text):\n\
+          \        missing.append('A minimal reproducible input and exact steps, with expected and actual output')\n\
+          \    if not re.search(r'(?i)traceback|request.?id\\s*[:=]\\s*\\S|\\b(?:400|401|403|404|429|500|502|503)\\\
+          b|connection refused|timed? ?out',text):\n        missing.append('Exact sanitized error and relevant node/service\
+          \ logs, including timestamp and request/run ID')\n    category, checks, keywords = 'needs-investigation',\
+          \ ['Reproduce with the smallest input and compare the expected result with the first failing step.','Locate\
+          \ the boundary that fails before assigning ownership to Dify, the plugin, or the upstream service.'],\
+          \ issue['title']\n    if re.search(r'(?i)429|rate.?limit|insufficient_quota',text):\n        category='upstream-limit-or-quota';\
+          \ keywords='429'\n        checks=['Inspect the upstream error code: quota/billing exhaustion and request/token\
+          \ rate limits require different fixes.','Compare provider project, model, concurrency, retries, timestamps,\
+          \ and rate-limit headers.','Run one minimal provider request from the same runtime/network with the same\
+          \ credential. Respect Retry-After; never loop on exhausted quota.']\n    elif re.search(r'(?i)connection\
+          \ refused|econnrefused',text):\n        category='connectivity'; keywords='connection refused'\n     \
+          \   checks=['Identify the refusing host and port from sanitized logs; a refused TCP connection happens\
+          \ before API-key validation.','Check service health, container DNS/ports, and whether localhost refers\
+          \ to the wrong container.','Compare the previous and current Dify/plugin-daemon versions, release notes\
+          \ and effective environment configuration.']\n    elif re.search(r'(?i)401|unauthori[sz]ed|invalid.api.key',text):\n\
+          \        category='authentication'; keywords='401'\n        checks=['Confirm provider, endpoint and credential\
+          \ source without printing the token.','Check expiry, permissions and selected project; compare one minimal\
+          \ request from the same network.']\n    elif re.search(r'(?i)\\bapi\\b',text) and re.search(r'(?i)empty|different|\\\
+          bui\\b',text):\n        category='ui-api-parity'; keywords='api empty'\n        checks=['Compare the UI\
+          \ draft with the published workflow behind the API key, including app ID and publish time.','Compare input\
+          \ names/types, user/conversation identity, file upload IDs and environment variables.','Compare node traces\
+          \ and parse the final SSE event when response_mode is streaming.']\n    elif re.search(r'(?i)documentation|\\\
+          bdocs?\\b',text):\n        category='documentation'; keywords='documentation'\n        checks=['Reproduce\
+          \ the exact documented example on its stated version, starting with prerequisites.','If version-specific,\
+          \ document the affected range and validate the correction on supported versions.']\n    context={'repository':data['repository'],'issue':{k:issue[k]\
+          \ for k in ['number','title','url','state','updated_at']},'category':category,'missing':missing,'checks':checks,'warnings':data.get('warnings',[])}\n\
+          \    return {'route':'continue','keywords':keywords[:250],'context_json':json.dumps(context),'report':''}\n"
+        variables:
+        - variable: payload_json
+          value_selector:
+          - read
+          - payload_json
+          value_type: string
+        outputs:
+          route:
+            type: string
+            children: null
+          keywords:
+            type: string
+            children: null
+          context_json:
+            type: string
+            children: null
+          report:
+            type: string
+            children: null
+      position:
+        x: 700
+        y: 200
+      positionAbsolute:
+        x: 700
+        y: 200
+      width: 244
+      height: 110
+      sourcePosition: right
+      targetPosition: left
+      selected: false
+    - id: route
+      type: custom
+      data:
+        type: if-else
+        title: Continue public triage?
+        desc: ''
+        selected: false
+        cases:
+        - id: 'true'
+          case_id: 'true'
+          logical_operator: and
+          conditions:
+          - id: is-normal
+            varType: string
+            variable_selector:
+            - inspect
+            - route
+            comparison_operator: is
+            value: continue
+      position:
+        x: 1030
+        y: 200
+      positionAbsolute:
+        x: 1030
+        y: 200
+      width: 244
+      height: 110
+      sourcePosition: right
+      targetPosition: left
+      selected: false
+    - id: related
+      type: custom
+      data:
+        type: tool
+        title: Find related issues
+        desc: ''
+        selected: false
+        provider_id: emptyteabot/issue_triage/issue_triage
+        provider_name: emptyteabot/issue_triage/issue_triage
+        provider_type: builtin
+        plugin_id: emptyteabot/issue_triage
+        tool_name: related_issues
+        tool_label: Find related issues
+        tool_description: Read-only GitHub API operation.
+        tool_configurations: {}
+        tool_parameters:
+          repository:
+            type: mixed
+            value: '{{#start.repository#}}'
+          keywords:
+            type: mixed
+            value: '{{#inspect.keywords#}}'
+          exclude_number:
+            type: mixed
+            value: '{{#start.issue_number#}}'
+        tool_node_version: '2'
+        is_team_authorization: true
+      position:
+        x: 1360
+        y: 80
+      positionAbsolute:
+        x: 1360
+        y: 80
+      width: 244
+      height: 110
+      sourcePosition: right
+      targetPosition: left
+      selected: false
+    - id: compose
+      type: custom
+      data:
+        type: code
+        title: Compose evidence brief
+        desc: ''
+        selected: false
+        code_language: python3
+        code: "\"\"\"Code node 2: combine evidence and search results into a reviewable report.\"\"\"\nimport json\n\
+          import re\n\n\ndef safe(value):\n    return re.sub(r'([\\\\`*_{}\\[\\]<>])',r'\\\\\\1',str(value)).replace('\\\
+          n',' ')\n\n\ndef main(context_json: str, related_json: str) -> dict:\n    context, related = json.loads(context_json),\
+          \ json.loads(related_json)\n    issue = context['issue']\n    lines=['# Issue triage brief','',f\"**{safe(context['repository'])}\
+          \ #{issue['number']} — {safe(issue['title'])}**\",f\"Source: {issue['url']}\",f\"State: {issue['state']}\
+          \ · Last updated: {issue['updated_at']}\",'',f\"Triage signal: **{context['category']}** (rule-based;\
+          \ not a root-cause diagnosis)\",'','## Information to confirm']\n    lines += ['- '+x for x in context['missing']]\
+          \ or ['- Basic context signals are present. Verify their values and reproducibility manually.']\n    lines\
+          \ += ['','## Suggested investigation order'] + [f'{i}. {x}' for i,x in enumerate(context['checks'],1)]\n\
+          \    lines += ['','## Related reports']\n    if related.get('ok'):\n        lines += [f\"- #{x['number']}\
+          \ [{safe(x['title'])}]({x['url']}) — {x['state']}\" for x in related['items']] or ['- No candidates matched\
+          \ this limited title search. This does not prove the issue is new.']\n        lines += ['',f\"Search:\
+          \ `{related['query']}`\",'These are keyword candidates, not confirmed duplicates.']\n        if related.get('incomplete_results'):\n\
+          \            lines.append('GitHub marked this search incomplete.')\n    else:\n        lines += ['Search\
+          \ unavailable: '+related.get('error',{}).get('message','Unknown error.'),'The brief remains usable without\
+          \ search results.']\n    lines += ['','## Suggested reply — review before posting','Thanks for reporting\
+          \ this. I have not confirmed the cause yet.']\n    if context['missing']:\n        lines += ['Could you\
+          \ share the following so we can reproduce it?'] + ['- '+x for x in context['missing']]\n    else:\n  \
+          \      lines += ['The report includes basic context. Could you confirm whether the smallest reproduction\
+          \ still fails and share its run ID?']\n    lines += ['Please redact credentials and personal data from\
+          \ logs. '+context['checks'][0],'','## Limits','Read-only workflow. No issue comment, label, or state is\
+          \ changed. Context is bounded to the issue body and the first five comments. English keyword rules can\
+          \ miss multilingual or unusual reports.']\n    lines += ['- '+x for x in context['warnings']]\n    return\
+          \ {'report':'\\n'.join(lines)}\n"
+        variables:
+        - variable: context_json
+          value_selector:
+          - inspect
+          - context_json
+          value_type: string
+        - variable: related_json
+          value_selector:
+          - related
+          - payload_json
+          value_type: string
+        outputs:
+          report:
+            type: string
+            children: null
+      position:
+        x: 1690
+        y: 80
+      positionAbsolute:
+        x: 1690
+        y: 80
+      width: 244
+      height: 110
+      sourcePosition: right
+      targetPosition: left
+      selected: false
+    - id: done
+      type: custom
+      data:
+        type: end
+        title: Triage brief
+        desc: ''
+        selected: false
+        outputs:
+        - variable: report
+          value_selector:
+          - compose
+          - report
+          value_type: string
+      position:
+        x: 2020
+        y: 80
+      positionAbsolute:
+        x: 2020
+        y: 80
+      width: 244
+      height: 110
+      sourcePosition: right
+      targetPosition: left
+      selected: false
+    - id: stop
+      type: custom
+      data:
+        type: end
+        title: Error or private review
+        desc: ''
+        selected: false
+        outputs:
+        - variable: report
+          value_selector:
+          - inspect
+          - report
+          value_type: string
+      position:
+        x: 1360
+        y: 440
+      positionAbsolute:
+        x: 1360
+        y: 440
+      width: 244
+      height: 110
+      sourcePosition: right
+      targetPosition: left
+      selected: false
+    edges:
+    - id: start-source-read-target
+      source: start
+      target: read
+      sourceHandle: source
+      targetHandle: target
+      type: custom
+      zIndex: 0
+      data:
+        sourceType: start
+        targetType: tool
+        isInIteration: false
+        isInLoop: false
+    - id: read-source-inspect-target
+      source: read
+      target: inspect
+      sourceHandle: source
+      targetHandle: target
+      type: custom
+      zIndex: 0
+      data:
+        sourceType: tool
+        targetType: code
+        isInIteration: false
+        isInLoop: false
+    - id: inspect-source-route-target
+      source: inspect
+      target: route
+      sourceHandle: source
+      targetHandle: target
+      type: custom
+      zIndex: 0
+      data:
+        sourceType: code
+        targetType: if-else
+        isInIteration: false
+        isInLoop: false
+    - id: route-true-related-target
+      source: route
+      target: related
+      sourceHandle: 'true'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+      data:
+        sourceType: if-else
+        targetType: tool
+        isInIteration: false
+        isInLoop: false
+    - id: related-source-compose-target
+      source: related
+      target: compose
+      sourceHandle: source
+      targetHandle: target
+      type: custom
+      zIndex: 0
+      data:
+        sourceType: tool
+        targetType: code
+        isInIteration: false
+        isInLoop: false
+    - id: compose-source-done-target
+      source: compose
+      target: done
+      sourceHandle: source
+      targetHandle: target
+      type: custom
+      zIndex: 0
+      data:
+        sourceType: code
+        targetType: end
+        isInIteration: false
+        isInLoop: false
+    - id: route-false-stop-target
+      source: route
+      target: stop
+      sourceHandle: 'false'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+      data:
+        sourceType: if-else
+        targetType: end
+        isInIteration: false
+        isInLoop: false
+    viewport:
+      x: 10
+      y: 100
+      zoom: 0.55

@@ -1,0 +1,25 @@
+{
+  "verification_scope": "Local Python SDK invocation with live GitHub API; not execution in Dify Cloud.",
+  "checked_at": "2026-10-13T08:31:40.451790+00:00",
+  "repository": "langgenius/dify",
+  "issue_number": "36283",
+  "steps": [
+    {
+      "name": "read_issue",
+      "status": "ok"
+    },
+    {
+      "name": "inspect_issue",
+      "route": "continue"
+    },
+    {
+      "name": "related_issues",
+      "status": "ok"
+    },
+    {
+      "name": "render_report",
+      "status": "ok"
+    }
+  ],
+  "report": "# Issue triage brief\n\n**langgenius/dify #36283 — Qdrant Connection refused after Dify upgrade**\nSource: https://github.com/langgenius/dify/issues/36283\nState: closed · Last updated: 2026-09-04T07:42:28Z\n\nTriage signal: **connectivity** (rule-based; not a root-cause diagnosis)\n\n## Information to confirm\n- Basic context signals are present. Verify their values and reproducibility manually.\n\n## Suggested investigation order\n1. Identify the refusing host and port from sanitized logs; a refused TCP connection happens before API-key validation.\n2. Check service health, container DNS/ports, and whether localhost refers to the wrong container.\n3. Compare the previous and current Dify/plugin-daemon versions, release notes and effective environment configuration.\n\n## Related reports\n- #40448 [nginx caches upstream DNS for api/plugin\\_daemon/web indefinitely — partial container restarts cause 502 Connection Refused](https://github.com/langgenius/dify/issues/40448) — open\n- #29656 [\\[Errno 111\\] Connection refused](https://github.com/langgenius/dify/issues/29656) — closed\n- #28691 [Run failed: \\[Errno 111\\] Connection refused](https://github.com/langgenius/dify/issues/28691) — closed\n- #29016 [http node, return  Run failed: \\[Errno 111\\] Connection refused](https://github.com/langgenius/dify/issues/29016) — closed\n- #30130 [Unable to use Ollama models after upgrading to 1.11.1 (connection refused on model validation)](https://github.com/langgenius/dify/issues/30130) — closed\n\nSearch: `repo:langgenius/dify is:issue in:title connection refused`\nThese are keyword candidates, not confirmed duplicates.\n\n## Suggested reply — review before posting\nThanks for reporting this. I have not confirmed the cause yet.\nThe report includes basic context. Could you confirm whether the smallest reproduction still fails and share its run ID?\nPlease redact credentials and personal data from logs. Identify the refusing host and port from sanitized logs; a refused TCP connection happens before API-key validation.\n\n## Limits\nRead-only workflow. No issue comment, label, or state is changed. Context is bounded to the issue body and the first five comments. English keyword rules can miss multilingual or unusual reports.\n- Only the first five comments are requested; later discussion may change the conclusion."
+}

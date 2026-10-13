@@ -1,0 +1,38 @@
+identity:
+  name: read_issue
+  author: emptyteabot
+  label:
+    en_US: Read public issue
+description:
+  human:
+    en_US: Read a public GitHub issue and up to five comments.
+  llm: Read a public GitHub issue and up to five comments.
+parameters:
+- name: repository
+  type: string
+  required: true
+  label:
+    en_US: Repository
+  human_description:
+    en_US: Public owner/repository, e.g. langgenius/dify
+  llm_description: Public owner/repository, e.g. langgenius/dify
+  form: llm
+- name: issue_number
+  type: string
+  required: true
+  label:
+    en_US: Issue number
+  human_description:
+    en_US: Positive issue number as a string, e.g. 123
+  llm_description: Positive issue number as a string, e.g. 123
+  form: llm
+output_schema:
+  type: object
+  properties:
+    status:
+      type: string
+    payload_json:
+      type: string
+extra:
+  python:
+    source: tools/read_issue.py

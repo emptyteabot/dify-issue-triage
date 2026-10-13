@@ -1,0 +1,49 @@
+identity:
+  name: related_issues
+  author: emptyteabot
+  label:
+    en_US: Find related issues
+description:
+  human:
+    en_US: Search issue titles in one public repository. Results are candidates, not
+      confirmed duplicates.
+  llm: Search issue titles in one public repository. Results are candidates, not confirmed
+    duplicates.
+parameters:
+- name: repository
+  type: string
+  required: true
+  label:
+    en_US: Repository
+  human_description:
+    en_US: Public owner/repository
+  llm_description: Public owner/repository
+  form: llm
+- name: keywords
+  type: string
+  required: true
+  label:
+    en_US: Keywords
+  human_description:
+    en_US: Short search phrase or issue title
+  llm_description: Short search phrase or issue title
+  form: llm
+- name: exclude_number
+  type: string
+  required: true
+  label:
+    en_US: Current issue number
+  human_description:
+    en_US: Exclude this positive issue number
+  llm_description: Exclude this positive issue number
+  form: llm
+output_schema:
+  type: object
+  properties:
+    status:
+      type: string
+    payload_json:
+      type: string
+extra:
+  python:
+    source: tools/related_issues.py

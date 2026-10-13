@@ -1,0 +1,30 @@
+identity:
+  author: emptyteabot
+  name: issue_triage
+  label:
+    en_US: GitHub Issue Triage
+  description:
+    en_US: Public GitHub issue context and related reports, with bounded read-only
+      API access.
+  icon: icon.svg
+  tags:
+  - productivity
+  - utilities
+credentials_for_provider:
+  github_token:
+    type: secret-input
+    required: false
+    label:
+      en_US: GitHub token (optional)
+    placeholder:
+      en_US: Leave blank for public anonymous access
+    help:
+      en_US: Optional personal token for higher limits. No write permissions needed.
+        Never put a token in workflow inputs.
+    url: https://github.com/settings/personal-access-tokens
+tools:
+- tools/read_issue.yaml
+- tools/related_issues.yaml
+extra:
+  python:
+    source: provider/issue_triage.py

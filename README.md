@@ -6,18 +6,18 @@ The workflow is read-only. It never posts a comment, changes labels, or closes a
 
 ## Deliverables and verification status
 
-| Item | Location | Status |
+| Item | Location | Verified result |
 | --- | --- | --- |
-| Plugin source | [`plugin/`](plugin/) | Implemented; official Dify packaging CLI accepted it |
-| Installable package | [`dist/issue_triage-0.1.0.difypkg`](dist/issue_triage-0.1.0.difypkg) | Packaged locally; Dify Cloud installation not yet verified |
-| Workflow DSL | [`workflow/issue-triage.yml`](workflow/issue-triage.yml) | Author-generated import candidate; not yet re-exported from Dify |
-| Tests | [`tests/`](tests/) | Local automated tests; see verification record |
-| Live external API check | [`docs/live-smoke.json`](docs/live-smoke.json) | Python SDK tools + GitHub API; explicitly not a Dify platform run |
+| Plugin source | [`plugin/`](plugin/) | Two SDK tools; installed in Dify Cloud |
+| Installable package | [`dist/issue_triage-0.1.0.difypkg`](dist/issue_triage-0.1.0.difypkg) | Its Dify checksum matches the installed package and exported DSL |
+| Workflow DSL | [`workflow/issue-triage.yml`](workflow/issue-triage.yml) | Actual Dify export, DSL version 0.7.0 |
+| Tests | [`tests/`](tests/) | 31 passed locally |
+| Platform verification | [`docs/verification.md`](docs/verification.md) | Successful seven-node Studio run, invalid-input branch and published Web App run |
 | Issue triage assessment | [`docs/issue-triage-answers.md`](docs/issue-triage-answers.md) | Eight English analyses and reply drafts |
-| English walkthrough | [`docs/walkthrough-notes.md`](docs/walkthrough-notes.md) | Recording notes prepared; candidate video not recorded |
-| Dify Web App | Not published | Pending platform installation and successful run |
+| English demo template | [`media/walkthrough-captioned.mp4`](media/walkthrough-captioned.mp4) | English captions and actual execution captures; silent, candidate voice pending |
+| Dify Web App | [Try the Workflow](https://udify.app/workflow/5SgEngzA4VeBZeH3) | Published; complete run succeeded; anonymous page access returned HTTP 200 |
 
-**This is not yet a complete assessment submission.** Before submission, install and run the plugin in Dify, replace the DSL with Dify's actual export, record the candidate's English walkthrough including a complete execution, and verify viewer access to the final links. See [the acceptance checklist](docs/acceptance-checklist.md).
+**Remaining candidate step:** record the candidate's own spoken English explanation. The captioned video is a recording template, not a completed candidate-narrated presentation. It includes a complete real Workflow execution. Use the [walkthrough notes](docs/walkthrough-notes.md) to rehearse in your own words, and verify the final narrated video link before submitting.
 
 ## What it does
 
@@ -47,7 +47,7 @@ flowchart TD
 - Outbound HTTPS access to `api.github.com`.
 - Optional GitHub personal access token. Anonymous public reads work with lower rate limits.
 
-The build uses `dify_plugin==0.10.2`, `httpx==0.28.1` and the official plugin CLI `0.6.11`. The manifest declares the base Dify minimum `1.0.0`; this is not a claim that every Dify version has been tested. Dify Cloud runtime compatibility remains an acceptance check.
+The build uses `dify_plugin==0.10.2`, `httpx==0.28.1` and the official plugin CLI `0.6.11`. The manifest declares the base Dify minimum `1.0.0`; this is not a claim that every Dify version has been tested. The verified platform is Dify Cloud with DSL 0.7.0 export support; older deployments may need a compatible export.
 
 ## Install and configure
 
@@ -57,8 +57,8 @@ The build uses `dify_plugin==0.10.2`, `httpx==0.28.1` and the official plugin CL
 4. Open **GitHub Issue Triage** in the installed tools and add a credential profile. The `GitHub token` field is optional: leave it blank for anonymous public reads. If your version requires a saved profile, save the blank profile as `Anonymous public access`.
 5. If you use a token, put it only in the provider's secret credential field. Use the least privileges required for public issue reads. No repository write permission is needed. A supplied token is checked against `GET /user`; errors are sanitized.
 6. In **Studio**, choose **Import DSL** and select `workflow/issue-triage.yml`.
-7. Confirm both tool nodes resolve to `emptyteabot/issue_triage/issue_triage` and choose the credential profile. The DSL does not contain workspace-specific credential IDs or package hashes; install the package first. If a Dify version requires rebinding, select **GitHub Issue Triage / Read public issue** and **Find related issues** in the respective nodes without changing their inputs.
-8. Run the workflow, inspect node traces, publish it, then **export the DSL from Dify**. Replace the author-generated file with that export before submission.
+7. Confirm both tool nodes resolve to `emptyteabot/issue_triage/issue_triage` and choose the credential profile. The actual export pins the installed package checksum and contains no credential values. Install the matching package first, then select your own workspace credential profile. If a Dify version requires rebinding, select **GitHub Issue Triage / Read public issue** and **Find related issues** in the respective nodes without changing their inputs.
+8. Run the workflow and inspect its node traces in your workspace. The submitted DSL is already the actual export of the tested application. If you change it, publish and export your changed version again.
 
 Do not globally weaken signature verification to make installation work. If the workspace disallows custom packages, use the workspace's supported development or trusted-package process with its administrator.
 
@@ -87,7 +87,7 @@ python3.12 -m venv .venv
 source .venv/bin/activate
 pip install -r plugin/requirements.txt -r requirements-dev.txt
 pytest -q
-python scripts/build_workflow.py
+python scripts/build_workflow.py  # writes a separate .authored.yml; preserves the verified export
 python scripts/live_smoke.py langgenius/dify 36283
 # Replace dify-plugin with the actual path to the official CLI binary.
 dify-plugin plugin package ./plugin -o ./dist/issue_triage-0.1.0.difypkg
@@ -95,9 +95,13 @@ dify-plugin plugin package ./plugin -o ./dist/issue_triage-0.1.0.difypkg
 
 The live smoke script invokes the real SDK tool adapters and the same Python functions embedded in the DSL. It makes actual GitHub API requests. It does **not** simulate a Dify runtime or prove import, installation, credential binding, publishing, or platform execution.
 
+The video source capture archive is included at `media/capture-source.zip`; `scripts/build_captioned_video.py` rebuilds the silent template with Pillow and ffmpeg. These media tools are separate from plugin runtime dependencies.
+
 For remote plugin development, use Dify's documented debugging connection and a local `.env` copied from `plugin/.env.example`. Never commit the remote debug key. A successful debug session should also be followed by a packaged-install test for the final submission.
 
 ## Tool contracts
+
+The Workflow outputs `report` on the ordinary path and `attention_report` on the API-error or private-review path. Dify requires unique output names even for mutually exclusive end nodes.
 
 Both tools yield explicit Dify variables named `status` and `payload_json`, plus a JSON message. `status` is `ok` or `error`. Workflow code parses `payload_json`, rather than assuming a particular shape for Dify's generic `json` output array.
 

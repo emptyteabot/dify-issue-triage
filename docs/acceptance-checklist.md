@@ -1,20 +1,18 @@
 # Final acceptance checklist
 
-This checklist records real verification, not intended behavior.
-
-- [x] Implement two tools with the Dify Plugin SDK.
-- [x] Use a real external API, optional secret credentials, input validation and explicit errors.
-- [x] Pass the local automated test suite.
+- [x] Implement two tools with the Dify Plugin SDK and a real external API.
+- [x] Handle optional secret credentials, input validation and explicit API errors.
+- [x] Pass 31 local automated tests.
 - [x] Package with the official Dify CLI.
-- [ ] Install the resulting package in the target Dify workspace.
-- [ ] Save/select an anonymous or token-based provider credential profile.
-- [ ] Import the authored workflow and confirm both tool nodes resolve correctly.
-- [ ] Run the normal path in Dify and save its real run ID and node trace.
-- [ ] Run an invalid-input case in Dify and confirm the error result.
-- [ ] Export the successful workflow from Dify and replace `workflow/issue-triage.yml`.
-- [ ] Publish the Dify Web App if workspace permissions allow; verify from an unauthenticated session.
-- [ ] Record the candidate's English explanation and at least one complete Dify execution.
-- [ ] Upload the video with viewer access, then test the video link signed out.
-- [ ] Update README status and the final submission links.
-
-The Dify account was reached during preparation, but browser credential protection prevented the package upload. No Dify execution, Web App publication or platform export is claimed.
+- [x] Install the package in Dify Cloud and verify both registered tools.
+- [x] Save a blank-token provider credential profile.
+- [x] Import the workflow and verify node parameters and authorization.
+- [x] Run the normal path in Dify; inspect the seven successful nodes.
+- [x] Run an invalid-input case and verify its actionable result.
+- [x] Resolve the duplicate end-output naming issue caught by publishing validation.
+- [x] Publish the app and run its public Web App successfully.
+- [x] Verify unauthenticated page access returns HTTP 200.
+- [x] Export the actual Dify DSL and verify its package checksum matches the distributed package.
+- [x] Prepare an English-captioned video with actual Workflow execution captures.
+- [ ] Add the candidate's own spoken English explanation.
+- [ ] Verify playback and audio of the final candidate-narrated video before submitting.

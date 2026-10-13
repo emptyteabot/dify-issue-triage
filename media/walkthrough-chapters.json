@@ -1,0 +1,62 @@
+[
+  {
+    "start": 0.0,
+    "end": 12.0,
+    "title": "01 / The problem",
+    "caption": "A read-only workflow helps maintainers collect evidence, find related reports and prepare a reply without guessing the cause."
+  },
+  {
+    "start": 12.0,
+    "end": 33.0,
+    "title": "02 / A complete tool plugin",
+    "caption": "The Dify SDK plugin exposes two read-only tools. A token is optional for public API access and is configured as a provider secret."
+  },
+  {
+    "start": 33.0,
+    "end": 58.0,
+    "title": "03 / Bounded API access",
+    "caption": "Repository syntax is validated before an API call. Requests use a fixed HTTPS host and explicit timeouts, with distinct actionable error codes."
+  },
+  {
+    "start": 58.0,
+    "end": 78.0,
+    "title": "04 / Workflow variables",
+    "caption": "The tool adapter returns status and payload_json as explicit SDK variables. The Workflow parses the payload and routes expected errors instead of inventing a diagnosis."
+  },
+  {
+    "start": 78.0,
+    "end": 86.013,
+    "title": "05 / Complete live execution",
+    "caption": "Now the published Web App runs the entire Workflow against a real public GitHub issue. Captured screens show the real input, execution and result; this walkthrough is edited for presentation."
+  },
+  {
+    "start": 86.013,
+    "end": 103.013,
+    "title": "06 / Inspect the real trace",
+    "caption": "The Studio trace shows seven successful nodes in 2.759 seconds, with zero model tokens. Both API tools and the processing and conditional nodes executed."
+  },
+  {
+    "start": 103.013,
+    "end": 123.013,
+    "title": "07 / Review the evidence",
+    "caption": "The result identifies the source issue, reports a rule-based connectivity signal and proposes an investigation order. These are triage signals, not a confirmed root cause."
+  },
+  {
+    "start": 123.013,
+    "end": 144.013,
+    "title": "08 / Candidates and a draft reply",
+    "caption": "Related reports are keyword candidates only. The reply remains a draft for review, and the workflow never posts it or changes the issue."
+  },
+  {
+    "start": 144.013,
+    "end": 147.21199999999996,
+    "title": "09 / Invalid input",
+    "caption": "An invalid repository is handled by the stop branch. The result explains the required input format and explicitly says that no diagnosis was generated."
+  },
+  {
+    "start": 147.21199999999996,
+    "end": 167.21199999999996,
+    "title": "10 / Limits and submission",
+    "caption": "The source, exported DSL and tested Web App are available. This captioned recording template has no candidate narration; add your own spoken English explanation before submitting it as the candidate walkthrough."
+  }
+]

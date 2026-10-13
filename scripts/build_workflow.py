@@ -22,12 +22,12 @@ nodes=[
  tool('related','Find related issues','related_issues',1360,80,{'repository':'{{#start.repository#}}','keywords':'{{#inspect.keywords#}}','exclude_number':'{{#start.issue_number#}}'}),
  code('compose','Compose evidence brief','render_report.py',1690,80,{'context_json':['inspect','context_json'],'related_json':['related','payload_json']},['report']),
  node('done','end','Triage brief',2020,80,outputs=[{'variable':'report','value_selector':['compose','report'],'value_type':'string'}]),
- node('stop','end','Error or private review',1360,440,outputs=[{'variable':'report','value_selector':['inspect','report'],'value_type':'string'}])]
+ node('stop','end','Error or private review',1360,440,outputs=[{'variable':'attention_report','value_selector':['inspect','report'],'value_type':'string'}])]
 byid={n['id']:n for n in nodes}
 edges=[]
 for source,target,handle in [('start','read','source'),('read','inspect','source'),('inspect','route','source'),('route','related','true'),('related','compose','source'),('compose','done','source'),('route','stop','false')]:
     edges.append({'id':f'{source}-{handle}-{target}-target','source':source,'target':target,'sourceHandle':handle,'targetHandle':'target','type':'custom','zIndex':0,'data':{'sourceType':byid[source]['data']['type'],'targetType':byid[target]['data']['type'],'isInIteration':False,'isInLoop':False}})
 features={'file_upload':{'enabled':False,'allowed_file_extensions':[],'allowed_file_types':[],'allowed_file_upload_methods':[],'number_limits':3},'opening_statement':'','retriever_resource':{'enabled':False},'sensitive_word_avoidance':{'enabled':False},'speech_to_text':{'enabled':False},'suggested_questions':[],'suggested_questions_after_answer':{'enabled':False},'text_to_speech':{'enabled':False,'language':'','voice':''}}
 app={'app':{'name':'GitHub Issue Triage','description':'Public issue context, related reports and an evidence-first reply draft. Read-only, rule-based, no LLM key required.','mode':'workflow','icon':'🔎','icon_background':'#DDF7ED','use_icon_as_answer_icon':False},'kind':'app','version':'0.3.1','dependencies':[],'workflow':{'conversation_variables':[],'environment_variables':[],'features':features,'graph':{'nodes':nodes,'edges':edges,'viewport':{'x':10,'y':100,'zoom':0.55}}}}
-(ROOT/'workflow/issue-triage.yml').write_text(yaml.safe_dump(app,sort_keys=False,allow_unicode=True,width=110),encoding='utf-8')
-print('Built workflow/issue-triage.yml (author-generated; Dify import/run/export still required).')
+(ROOT/'workflow/issue-triage.authored.yml').write_text(yaml.safe_dump(app,sort_keys=False,allow_unicode=True,width=110),encoding='utf-8')
+print('Built workflow/issue-triage.authored.yml; the verified platform export is not overwritten.')

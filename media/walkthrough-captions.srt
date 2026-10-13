@@ -1,0 +1,54 @@
+1
+00:00:00,000 --> 00:00:12,000
+A read-only workflow helps maintainers collect evidence, find related reports
+and prepare a reply without guessing the cause.
+
+2
+00:00:12,000 --> 00:00:33,000
+The Dify SDK plugin exposes two read-only tools. A token is optional for
+public API access and is configured as a provider secret.
+
+3
+00:00:33,000 --> 00:00:58,000
+Repository syntax is validated before an API call. Requests use a fixed HTTPS
+host and explicit timeouts, with distinct actionable error codes.
+
+4
+00:00:58,000 --> 00:01:18,000
+The tool adapter returns status and payload_json as explicit SDK variables.
+The Workflow parses the payload and routes expected errors instead of
+inventing a diagnosis.
+
+5
+00:01:18,000 --> 00:01:26,013
+Now the published Web App runs the entire Workflow against a real public
+GitHub issue. Captured screens show the real input, execution and result; this
+walkthrough is edited for presentation.
+
+6
+00:01:26,013 --> 00:01:43,013
+The Studio trace shows seven successful nodes in 2.759 seconds, with zero
+model tokens. Both API tools and the processing and conditional nodes
+executed.
+
+7
+00:01:43,013 --> 00:02:03,013
+The result identifies the source issue, reports a rule-based connectivity
+signal and proposes an investigation order. These are triage signals, not a
+confirmed root cause.
+
+8
+00:02:03,013 --> 00:02:24,013
+Related reports are keyword candidates only. The reply remains a draft for
+review, and the workflow never posts it or changes the issue.
+
+9
+00:02:24,013 --> 00:02:27,212
+An invalid repository is handled by the stop branch. The result explains the
+required input format and explicitly says that no diagnosis was generated.
+
+10
+00:02:27,212 --> 00:02:47,212
+The source, exported DSL and tested Web App are available. This captioned
+recording template has no candidate narration; add your own spoken English
+explanation before submitting it as the candidate walkthrough.

@@ -1,80 +1,58 @@
-# English walkthrough: recording notes
+# Candidate English narration notes
 
-Target length: 4–5 minutes. These are rehearsal prompts, not a script to read verbatim. Record the candidate's own English explanation and a real Dify run. A local Python smoke test is not a substitute for the complete Workflow execution required by the assessment.
+The captioned template lasts about **2 minutes 48 seconds**. Aim for roughly 300–350 spoken words, and explain the implementation naturally in your own words. The notes below are prompts, not a transcript to read verbatim.
 
-## Before recording
+Record your own voice. No face camera is needed. Keep the recording free of private notifications and credentials. You can submit a separate voice recording for editing, or record your own full screen-and-voice walkthrough if you prefer.
 
-Install the package, import the workflow, select the provider credential profile, and verify a successful run. Close credential settings and unrelated tabs. Use a public issue. Increase browser zoom enough to make inputs and node results readable. Disable private notifications.
+## 0:00–0:12 — The problem
 
-## 0:00–0:35 — The user problem
+Explain who uses this: a maintainer handling an incomplete public GitHub report. The output is a context brief, related reports and a reply draft. It should help the first investigation without guessing a cause.
 
-Show the README and the Dify canvas.
+## 0:12–0:33 — The plugin
 
-Explain: a maintainer receives a report without enough context. The goal is to make the first investigation useful, without guessing the cause or promising a fix.
+Name the two SDK tools: **Read public issue** and **Find related issues**. The real package is installed in Dify. Public access can use a blank-token credential profile; an optional GitHub token belongs in the provider's secret field, not Workflow inputs.
 
-Points to cover in your own words:
+## 0:33–0:58 — The external API
 
-- The input is one public repository and issue number.
-- The output is an investigation brief and a reply draft.
-- Nothing is posted back to GitHub automatically.
+Explain the fixed `api.github.com` host, repository/issue validation and request timeouts. Describe why 401, permission errors, rate limits, missing resources and network errors need different messages. The client rejects private repositories before reading their issue bodies and performs GET requests only.
 
-## 0:35–1:20 — Plugin and external API
+## 0:58–1:18 — The Workflow
 
-Open `plugin/github_client.py` and the two tool files.
+Explain the explicit `status` and `payload_json` tool variables. The Workflow reads context, inspects signals, branches for failures or potential security reports, calls related search for ordinary issues, and composes a report. It uses more than one tool call and has meaningful routing.
 
-Explain:
+## 1:18–1:26 — The actual public run
 
-- The SDK adapters emit explicit variables: `status` and `payload_json`.
-- The client calls GitHub's repository, issue, comment and search REST endpoints.
-- The API host is fixed; tokens are optional and sent only in the authorization header.
-- A private repository is rejected before retrieving its issue body.
-- Requests have timeouts; 401, 403, 404, rate limits and network failures have different messages.
+The recording shows `langgenius/dify`, issue `36283`, being executed by the published Web App. Let viewers see the input, running step and final result. These are actual captures, edited for presentation.
 
-Do not open a real token. You can show the YAML `secret-input` declaration instead.
+## 1:26–1:43 — The trace
 
-## 1:20–2:05 — Why this is a workflow
+Point out the seven successful Studio nodes, 2.759-second runtime and zero model tokens. Explain the trade-off: explicit rules make the demo reproducible without an LLM credential, while limiting its language understanding.
 
-Show the actual canvas and trace the branches.
+## 1:43–2:03 — The report
 
-- First tool: retrieve context.
-- Code: inspect failure/security signals and missing information.
-- Conditional: stop for an API error or potential security report.
-- Second tool: search related issues for normal reports.
-- Code: combine facts, limitations, next checks and a draft reply.
+Point to the original source and investigation order. A connectivity signal is not a confirmed diagnosis. Even when context signals are present, a person must verify the version values and reproduction.
 
-Explain the trade-off: explicit rules make the demo reproducible and avoid a paid model dependency, but they cannot understand every report. Similar titles are candidates, not confirmed duplicates.
+## 2:03–2:24 — Related reports and reply
 
-## 2:05–3:35 — Required complete execution
+Related titles are keyword candidates, not proof of duplication. The draft asks for useful evidence and does not promise an unverified fix. Nothing is posted automatically; comments, labels and issue state remain under human control.
 
-Keep the screen recording running from input to final output.
+## 2:24–2:28 — The failure path
 
-1. Enter `langgenius/dify` and `36283` (or another verified public issue).
-2. Click Run and wait for completion.
-3. Show the overall success state and the real node trace.
-4. Open the first tool's output, then the conditional branch and related-search output.
-5. Read the final report briefly. Point to the original source, investigation order, and the review-before-posting wording.
-6. If a live API fails, show the real error and explain it; do not replace it with a fabricated successful trace. Retry only when appropriate.
+The invalid repository produces `invalid_input` and an actionable explanation. The stop result explicitly says no diagnosis was generated.
 
-## 3:35–4:15 — One failure path
+## 2:28–2:48 — Limits and handoff
 
-Run `repository: not a repo` with issue number `1`. Show the actionable error result. Explain that an invalid input does not produce a fake diagnosis and should not cause an external request.
+Mention the public-repository scope, first-five-comment cap, incomplete search/context and English keyword limitations. Potential security reports need private review; the final brief omits issue text but Dify execution logs can still contain the earlier tool output. Finish by pointing to the source, actual exported DSL and published Web App.
 
-## 4:15–4:50 — Limits and handoff
+## Questions to prepare for
 
-Explain the five-comment cap, partial-search behavior, keyword limitations, and the fact that Dify execution logs can contain issue data even when the final security report omits it. Show the GitHub repository, installable package and the DSL exported from the successful Dify app.
+- Why a plugin rather than putting every request in HTTP nodes?
+- Why explicitly emit `payload_json` instead of relying on generic tool JSON?
+- Why are related titles not confirmed duplicates?
+- What happens if comment fetch or search fails?
+- Why use rules rather than an LLM, and where do those rules stop working?
+- Why can a UI draft and API execution differ?
+- Why are the two end outputs named `report` and `attention_report`?
+- What can remain in execution logs after the security branch?
 
-Finish with what you would improve next: better multilingual context checks and a small evaluation set of real, sanitized reports, before adding automated actions.
-
-## Questions to be ready for
-
-- Why use a plugin instead of putting every request in HTTP nodes?
-- Why emit `payload_json` explicitly instead of relying on generic tool JSON output?
-- What distinguishes a GitHub 403 permission error from a rate-limit response?
-- Why can an API call and a UI run differ even with the same visible input?
-- What happens if comments or related search fail?
-- What can the security branch prevent, and what can still remain in logs?
-- Where does your implementation stop being reliable?
-
-## Publishing the video
-
-Upload the real recording to a service that supports link viewing. Check it in a signed-out browser, verify playback and audio, and use the final video URL in the submission. No candidate recording or video URL has been created yet.
+Before submitting, play the final video as a viewer, verify intelligible English audio and a visible complete Workflow execution, and use the final candidate-narrated video link. The current MP4 is silent and clearly labeled as a recording template.

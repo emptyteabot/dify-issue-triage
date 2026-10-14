@@ -17,7 +17,7 @@ The workflow is read-only. It never posts a comment, changes labels, or closes a
 | English demo template | [`media/walkthrough-captioned.mp4`](media/walkthrough-captioned.mp4) | English captions and actual execution captures; silent, candidate voice pending |
 | Dify Web App | [Try the Workflow](https://udify.app/workflow/5SgEngzA4VeBZeH3) | Published; complete run succeeded; anonymous page access returned HTTP 200 |
 
-**Remaining candidate step:** record the candidate's own spoken English explanation. The captioned video is a recording template, not a completed candidate-narrated presentation. It includes a complete real Workflow execution. Use the [walkthrough notes](docs/walkthrough-notes.md) to rehearse in your own words, and verify the final narrated video link before submitting.
+**Remaining candidate step:** record the candidate's own spoken English explanation. The captioned video is a recording template, not a completed candidate-narrated presentation. It includes a complete real Workflow execution. Use the [complete English rehearsal script](docs/walkthrough-script.md) and [walkthrough notes](docs/walkthrough-notes.md) to prepare your own explanation. The script allows a slower 4–5-minute delivery; retime the visuals to the recorded voice, and verify the final narrated video link before submitting.
 
 ## What it does
 

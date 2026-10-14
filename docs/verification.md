@@ -59,4 +59,12 @@ The published Web App completed a separate full run against the same public issu
 
 `media/walkthrough-captioned.mp4` is an edited English-captioned screen-capture walkthrough. It includes captured input, execution and result screens from the actual public run, the Studio success trace, and the invalid-input run. The underlying captured frames are preserved in `media/capture-source.zip`. No execution result or interface was fabricated.
 
-The video has **no audio narration**. The candidate must add their own spoken English explanation before treating it as the final candidate walkthrough.
+The original template has no audio narration and is retained as supporting material.
+
+### Candidate-narrated final video
+
+[Watch the English walkthrough](https://dify-issue-triage-demo.lunarnewt3.chatgpt.site/)
+
+The final version combines ten candidate-recorded English audio clips with the actual capture sequence, retimed to the recorded voice. It includes reviewed English subtitles, the complete public run, the Studio trace, the invalid-input path, and the implementation trade-offs. The first two supplied audio clips were reordered by content. Trailing silence was trimmed and loudness adjusted; the candidate's original voice and speaking speed are preserved. No synthetic narration is used.
+
+The narrated timeline is about **3 minutes 49 seconds**. The MP4 uses H.264 video, AAC English audio, burned-in English captions and an English subtitle track. `media/narrated-edit.json` records the chapter timing and editing scope. The final MP4 is served by the public submission page; the large output and the private original recordings are not stored in this GitHub repository.

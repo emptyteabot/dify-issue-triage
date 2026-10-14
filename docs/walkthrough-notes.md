@@ -1,5 +1,7 @@
 # Candidate English narration notes
 
+The candidate-narrated final video is now available on the [submission page](https://dify-issue-triage-demo.lunarnewt3.chatgpt.site/). The original template timings below are rehearsal references; the final visuals are retimed to the recorded voice.
+
 The captioned template lasts about **2 minutes 48 seconds**. Aim for roughly 300–350 spoken words, and explain the implementation naturally in your own words. The notes below are prompts, not a transcript to read verbatim.
 
 Record your own voice. No face camera is needed. Keep the recording free of private notifications and credentials. You can submit a separate voice recording for editing, or record your own full screen-and-voice walkthrough if you prefer.
@@ -55,4 +57,4 @@ Mention the public-repository scope, first-five-comment cap, incomplete search/c
 - Why are the two end outputs named `report` and `attention_report`?
 - What can remain in execution logs after the security branch?
 
-Before submitting, play the final video as a viewer, verify intelligible English audio and a visible complete Workflow execution, and use the final candidate-narrated video link. The current MP4 is silent and clearly labeled as a recording template.
+Before submitting, use the final candidate-narrated video link. The older `walkthrough-captioned.mp4` remains a clearly labeled silent template.

@@ -1,0 +1,101 @@
+{
+  "candidate_narration": true,
+  "synthetic_voice": false,
+  "duration_seconds": 229.167,
+  "size_bytes": 5972127,
+  "audio_editing": "Trailing silence trimmed; mild filtering and loudness normalization; original voice and speed preserved.",
+  "captions": "English wording reviewed against the supplied script; speech timestamps used for alignment; technical names normalized.",
+  "visuals": "Edited captures from actual Dify executions, retimed to the candidate voice. Original silent-template footer removed.",
+  "chapters": [
+    {
+      "chapter": 1,
+      "title": "The problem",
+      "start": 0.0,
+      "end": 17.17,
+      "voice_source": "candidate-clip-01",
+      "source_trim_end": 16.57,
+      "text": "Hi, this is my Dify assessment project, GitHub Issue Triage. It helps a maintainer review a public GitHub issue and prepare the next reply. The main goal is to collect evidence before deciding what caused the problem."
+    },
+    {
+      "chapter": 2,
+      "title": "The plugin",
+      "start": 17.17,
+      "end": 38.32,
+      "voice_source": "candidate-clip-02",
+      "source_trim_end": 20.55,
+      "text": "The project has two tools built with the Dify Plugin SDK: Read public issue and Find related issues. They call the real GitHub API. A GitHub token is optional for public reads. When used, it stays in the provider's secret credential field."
+    },
+    {
+      "chapter": 3,
+      "title": "API boundaries",
+      "start": 38.32,
+      "end": 64.69,
+      "voice_source": "candidate-clip-03",
+      "source_trim_end": 25.77,
+      "text": "The client checks the repository format and issue number before making requests. It uses a fixed API host and request timeouts. It also checks that the repository is public before reading issue content. Authentication errors, rate limits, missing resources, and network failures have separate, useful messages."
+    },
+    {
+      "chapter": 4,
+      "title": "Workflow routing",
+      "start": 64.69,
+      "end": 90.24,
+      "voice_source": "candidate-clip-04",
+      "source_trim_end": 24.95,
+      "text": "Each tool returns status and payload_json as explicit variables. The workflow reads the issue, checks context, and chooses a branch. API failures and possible security reports go to a stop path. Ordinary issues continue to related search and report generation. If search fails, the main brief is still returned."
+    },
+    {
+      "chapter": 5,
+      "title": "The real execution",
+      "start": 90.24,
+      "end": 107.29,
+      "voice_source": "candidate-clip-05",
+      "source_trim_end": 16.45,
+      "text": "Here is the published app running a real issue from the Dify repository, issue number thirty-six thousand two hundred and eighty-three. These captured screens show the input, execution, and final result."
+    },
+    {
+      "chapter": 6,
+      "title": "The trace",
+      "start": 107.29,
+      "end": 127.16,
+      "voice_source": "candidate-clip-06",
+      "source_trim_end": 19.27,
+      "text": "The Studio trace shows seven successful nodes, a runtime of about two point eight seconds, and zero model tokens. This version uses simple rules instead of a large language model. That makes its decisions easy to inspect, but limits language understanding."
+    },
+    {
+      "chapter": 7,
+      "title": "Review the report",
+      "start": 127.16,
+      "end": 148.77,
+      "voice_source": "candidate-clip-07",
+      "source_trim_end": 21.01,
+      "text": "The report links to the original issue. In this example, connection refused selects a connectivity checklist. I would check the target service, host, port, and container network first. This is an investigation plan. The workflow has not confirmed the root cause."
+    },
+    {
+      "chapter": 8,
+      "title": "Candidates and a draft",
+      "start": 148.77,
+      "end": 170.9,
+      "voice_source": "candidate-clip-08",
+      "source_trim_end": 21.53,
+      "text": "Related issues come from title keyword search in the same repository. They are candidates for review, not confirmed duplicates. The suggested reply asks for useful evidence. It stays a draft: nothing is posted, labeled, or closed automatically."
+    },
+    {
+      "chapter": 9,
+      "title": "Invalid input",
+      "start": 170.9,
+      "end": 187.27,
+      "voice_source": "candidate-clip-09",
+      "source_trim_end": 15.77,
+      "text": "For an invalid repository, the workflow returns invalid_input and explains the required format. It stops without generating a diagnosis. This keeps bad input from becoming a misleading report."
+    },
+    {
+      "chapter": 10,
+      "title": "Limits and handoff",
+      "start": 187.27,
+      "end": 229.16,
+      "voice_source": "candidate-clip-10",
+      "source_trim_end": 41.29,
+      "text": "This version supports public repositories and reads at most five comments. Its English keyword rules can miss important context. Possible security reports skip search and omit issue text from the final brief, although earlier tool output can remain in execution logs. The repository includes the plugin package and the exported workflow YAML. The published app is also available. AI coding assistance was used; these checks and limits are documented."
+    }
+  ]
+}

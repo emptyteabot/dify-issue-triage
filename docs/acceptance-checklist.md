@@ -14,5 +14,6 @@
 - [x] Verify unauthenticated page access returns HTTP 200.
 - [x] Export the actual Dify DSL and verify its package checksum matches the distributed package.
 - [x] Prepare an English-captioned video with actual Workflow execution captures.
-- [ ] Add the candidate's own spoken English explanation.
-- [ ] Verify playback and audio of the final candidate-narrated video before submitting.
+- [x] Add the candidate's own spoken English explanation using ten candidate-recorded clips.
+- [x] Verify final audio/video duration, audio decoding, caption timing and sampled playback frames through the last chapter.
+- [x] Publish a public video page with locally hosted YAML, plugin and source downloads.

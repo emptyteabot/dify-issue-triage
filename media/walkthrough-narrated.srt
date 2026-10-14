@@ -1,0 +1,180 @@
+1
+00:00:00,000 --> 00:00:05,540
+Hi, this is my Dify assessment project, GitHub Issue Triage.
+
+2
+00:00:05,840 --> 00:00:10,540
+It helps a maintainer review a public GitHub issue and prepare the next
+
+3
+00:00:10,560 --> 00:00:11,340
+reply.
+
+4
+00:00:11,640 --> 00:00:16,300
+The main goal is to collect evidence before deciding what caused the
+problem.
+
+5
+00:00:17,170 --> 00:00:22,790
+The project has two tools built with the Dify Plugin SDK: Read public
+
+6
+00:00:22,810 --> 00:00:25,630
+issue and Find related issues.
+
+7
+00:00:25,730 --> 00:00:28,370
+They call the real GitHub API.
+
+8
+00:00:28,670 --> 00:00:32,230
+A GitHub token is optional for public reads.
+
+9
+00:00:32,450 --> 00:00:37,450
+When used, it stays in the provider's secret credential field.
+
+10
+00:00:38,320 --> 00:00:44,500
+The client checks the repository format and issue number before making
+requests.
+
+11
+00:00:44,840 --> 00:00:48,960
+It uses a fixed API host and request timeouts.
+
+12
+00:00:48,980 --> 00:00:54,520
+It also checks that the repository is public before reading issue content.
+
+13
+00:00:54,540 --> 00:01:03,820
+Authentication errors, rate limits, missing resources, and network failures
+have separate, useful messages.
+
+14
+00:01:04,690 --> 00:01:09,950
+Each tool returns status and payload_json as explicit variables.
+
+15
+00:01:10,350 --> 00:01:14,810
+The workflow reads the issue, checks context, and chooses a branch.
+
+16
+00:01:15,170 --> 00:01:19,990
+API failures and possible security reports go to a stop path.
+
+17
+00:01:20,010 --> 00:01:25,470
+Ordinary issues continue to related search and report generation.
+
+18
+00:01:25,730 --> 00:01:29,370
+If search fails, the main brief is still returned.
+
+19
+00:01:30,240 --> 00:01:35,000
+Here is the published app running a real issue from the Dify repository,
+
+20
+00:01:35,320 --> 00:01:40,700
+issue number thirty-six thousand two hundred and eighty-three.
+
+21
+00:01:40,720 --> 00:01:46,420
+These captured screens show the input, execution, and final result.
+
+22
+00:01:47,290 --> 00:01:52,663
+The Studio trace shows seven successful nodes, a runtime of about two point
+
+23
+00:01:52,683 --> 00:01:55,990
+eight seconds, and zero model tokens.
+
+24
+00:01:56,010 --> 00:02:00,130
+This version uses simple rules instead of a large language model.
+
+25
+00:02:00,150 --> 00:02:06,290
+That makes its decisions easy to inspect, but limits language understanding.
+
+26
+00:02:07,160 --> 00:02:09,880
+The report links to the original issue.
+
+27
+00:02:10,200 --> 00:02:15,660
+In this example, connection refused selects a connectivity checklist.
+
+28
+00:02:15,680 --> 00:02:21,660
+I would check the target service, host, port, and container network first.
+
+29
+00:02:21,680 --> 00:02:24,120
+This is an investigation plan.
+
+30
+00:02:24,360 --> 00:02:27,900
+The workflow has not confirmed the root cause.
+
+31
+00:02:28,770 --> 00:02:33,910
+Related issues come from title keyword search in the same repository.
+
+32
+00:02:34,390 --> 00:02:39,570
+They are candidates for review, not confirmed duplicates.
+
+33
+00:02:40,210 --> 00:02:43,790
+The suggested reply asks for useful evidence.
+
+34
+00:02:44,170 --> 00:02:50,030
+It stays a draft: nothing is posted, labeled, or closed automatically.
+
+35
+00:02:50,900 --> 00:02:58,360
+For an invalid repository, the workflow returns invalid_input and explains
+the required format.
+
+36
+00:02:58,740 --> 00:03:01,593
+It stops without generating a diagnosis.
+
+37
+00:03:01,613 --> 00:03:06,400
+This keeps bad input from becoming a misleading report.
+
+38
+00:03:07,270 --> 00:03:13,010
+This version supports public repositories and reads at most five comments.
+
+39
+00:03:13,430 --> 00:03:18,030
+Its English keyword rules can miss important context.
+
+40
+00:03:18,050 --> 00:03:25,750
+Possible security reports skip search and omit issue text from the final
+brief,
+
+41
+00:03:25,950 --> 00:03:31,230
+although earlier tool output can remain in execution logs.
+
+42
+00:03:31,510 --> 00:03:37,990
+The repository includes the plugin package and the exported workflow YAML.
+
+43
+00:03:38,410 --> 00:03:41,330
+The published app is also available.
+
+44
+00:03:41,770 --> 00:03:48,290
+AI coding assistance was used; these checks and limits are documented.

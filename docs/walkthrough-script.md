@@ -1,5 +1,7 @@
 # English walkthrough rehearsal script
 
+The final video with candidate-recorded English narration is available on the [submission page](https://dify-issue-triage-demo.lunarnewt3.chatgpt.site/). This script is the rehearsal reference used for that recording.
+
 This is a complete rehearsal script grounded in the installed plugin, exported Workflow and recorded Dify execution. Read the implementation first and explain it naturally in your own voice. AI coding assistance was used to develop the project.
 
 The spoken text is approximately 419 words. At 100–120 words per minute, allow about 4–5 minutes including pauses. The existing silent template lasts about 2 minutes 48 seconds; its timestamps below identify the corresponding visuals, not a speaking deadline. Retiming the visuals to candidate-recorded audio is expected.
@@ -79,4 +81,4 @@ This version supports public repositories and reads at most five comments. Its E
 
 ## Before final submission
 
-Replace the silent template video link with an accessible candidate-narrated video. Check that the final audio is intelligible, that the explanation matches the implementation, and that the complete real execution remains visible. Do not describe the silent template as the completed spoken-English demo.
+Use the accessible candidate-narrated video on the submission page. The older silent template is supporting material and is not the completed spoken-English demo.
